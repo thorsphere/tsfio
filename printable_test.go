@@ -16,7 +16,7 @@ import (
 func TestPrintable1(t *testing.T) {
 	// Retrieve the return string from Printable for a test string with only printable runes
 	str := tsfio.Printable(testcase)
-	// The test fails, if the retrived string does not equal the provided string with only printable runes
+	// The test fails, if the retrieved string does not equal the provided string with only printable runes
 	if str != testcase {
 		t.Error(tserr.Return(&tserr.ReturnArgs{Op: "Printable", Actual: str, Want: testcase}))
 	}

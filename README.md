@@ -1,19 +1,19 @@
 # tsfio
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/thorstenrie/tsfio)](https://goreportcard.com/report/github.com/thorstenrie/tsfio)
-[![CodeFactor](https://www.codefactor.io/repository/github/thorstenrie/tsfio/badge)](https://www.codefactor.io/repository/github/thorstenrie/tsfio)
-![OSS Lifecycle](https://img.shields.io/osslifecycle/thorstenrie/tsfio)
+[![Go Report Card](https://goreportcard.com/badge/github.com/thorsphere/tsfio)](https://goreportcard.com/report/github.com/thorsphere/tsfio)
+[![CodeFactor](https://www.codefactor.io/repository/github/thorsphere/tsfio/badge)](https://www.codefactor.io/repository/github/thorsphere/tsfio)
+![OSS Lifecycle](https://img.shields.io/osslifecycle/thorsphere/tsfio)
 
-[![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/thorstenrie/tsfio)](https://pkg.go.dev/mod/github.com/thorstenrie/tsfio)
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/thorstenrie/tsfio)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/thorstenrie/tsfio)
+[![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/thorsphere/tsfio)](https://pkg.go.dev/mod/github.com/thorsphere/tsfio)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/thorsphere/tsfio)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/thorsphere/tsfio)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorstenrie/tsfio)
-![GitHub last commit](https://img.shields.io/github/last-commit/thorstenrie/tsfio)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/thorstenrie/tsfio)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/thorstenrie/tsfio)
-![GitHub Top Language](https://img.shields.io/github/languages/top/thorstenrie/tsfio)
-![GitHub](https://img.shields.io/github/license/thorstenrie/tsfio)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorsphere/tsfio)
+![GitHub last commit](https://img.shields.io/github/last-commit/thorsphere/tsfio)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/thorsphere/tsfio)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/thorsphere/tsfio)
+![GitHub Top Language](https://img.shields.io/github/languages/top/thorsphere/tsfio)
+![GitHub](https://img.shields.io/github/license/thorsphere/tsfio)
 
 [Go](https://go.dev/) package with a [simple](https://en.wikipedia.org/wiki/KISS_principle) API for file input output. It is a supplement to the standard library and supplies additional functions for file input output and string operations, e.g., appending one file to another file.
 
@@ -25,7 +25,7 @@
 ## Defaults
 
 All file input output operations on Linux and Windows system directories or
-files are blocked (see [inval_unix.go](https://github.com/thorstenrie/tsfio/blob/main/inval_unix.go) and [inval_win.go](https://github.com/thorstenrie/tsfio/blob/main/inval_win.go)) and an error is returned.
+files are blocked (see [inval_unix.go](https://github.com/thorsphere/tsfio/blob/main/inval_unix.go) and [inval_win.go](https://github.com/thorsphere/tsfio/blob/main/inval_win.go)) and an error is returned.
 All operations expect a directory or a regular file, return an error otherwise.
 Default flags and file mode is used when opening files, creating files or directories
 and when writing to files (with exceptions documented in the function descriptions)
@@ -36,14 +36,14 @@ and when writing to files (with exceptions documented in the function descriptio
 - File mode and permission bits are 0644.
 - Directory mode and permissions bits are 0755.
 
-If an API call is not successful, a [tserr](https://github.com/thorstenrie/tserr) error in JSON format is returned.
+If an API call is not successful, a [tserr](https://github.com/thorsphere/tserr) error in JSON format is returned.
 
 ## Usage
 
 In the Go app, the package is imported with
 
 ```go
-import "github.com/thorstenrie/tsfio"
+import "github.com/thorsphere/tsfio"
 ```
 
 A Filename is the name of a regular file and may contain its path. A Directory is the name of a directory and may contain its path
@@ -109,7 +109,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/thorstenrie/tsfio"
+	"github.com/thorsphere/tsfio"
 )
 
 func main() {
@@ -149,7 +149,7 @@ func main() {
 	fmt.Println(string(c))
 }
 ```
-[Go Playground](https://go.dev/play/p/wkR4CwxZ-W9)
+[Go Playground](https://go.dev/play/p/FYKm59cQuAV)
 
 Output
 ```
@@ -164,8 +164,8 @@ foo
 
 ## Links
 
-[Godoc](https://pkg.go.dev/github.com/thorstenrie/tsfio)
+[Godoc](https://pkg.go.dev/github.com/thorsphere/tsfio)
 
-[Go Report Card](https://goreportcard.com/report/github.com/thorstenrie/tsfio)
+[Go Report Card](https://goreportcard.com/report/github.com/thorsphere/tsfio)
 
-[Open Source Insights](https://deps.dev/go/github.com%2Fthorstenrie%2Ftsfio)
+[Open Source Insights](https://deps.dev/go/github.com%2Fthorsphere%2Ftsfio)
