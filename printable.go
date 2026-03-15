@@ -1,4 +1,4 @@
-// Copyright (c) 2023 thorstenrie.
+// Copyright (c) 2023-2026 thorsphere.
 // All Rights Reserved. Use is governed with GNU Affero General Public Licence v3.0
 // that can be found in the LICENSE file.
 package tsfio
@@ -29,8 +29,8 @@ func Printable(a string) string {
 // a non-printable character, it returns false. If a is nil or
 // has zero length, it returns false and an error.
 func IsPrintable(a []string) (bool, error) {
-	// Return false and an an error, if a is nil or has zero length
-	if (a == nil) || (len(a) == 0) {
+	// Return false and an error, if a has zero length
+	if len(a) == 0 {
 		return false, tserr.Empty("slice of strings a")
 	}
 	// Iterate all elements of the slice

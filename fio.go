@@ -25,7 +25,7 @@
 // line feed LF (0x0A). Therefore, Windows new lines CR LF (0x0D 0x0A) are replaced by Unix
 // new lines LF (0x0A). Also, Mac new lines CR (0x0D) are replaced by Unix new lines LF (0x0A).
 //
-// Copyright (c) 2023 thorstenrie.
+// Copyright (c) 2023-2026 thorsphere.
 // All Rights Reserved. Use is governed with GNU Affero General Public Licence v3.0
 // that can be found in the LICENSE file.
 package tsfio
@@ -124,8 +124,12 @@ func WriteStr(fn Filename, s string) error {
 		f.Close()
 		return tserr.Op(&tserr.OpArgs{Op: "write string to", Fn: string(fn), Err: e})
 	}
-	// Close file and return nil
-	f.Close()
+	// Close file
+	if e := f.Close(); e != nil {
+		// Return error, if Close fails
+		return tserr.Op(&tserr.OpArgs{Op: "Close", Fn: string(fn), Err: e})
+	}
+	// No error occurred, return nil
 	return nil
 }
 
@@ -234,17 +238,17 @@ func AppendFile(a *Append) error {
 	if e := CheckFile(a.FileI); e != nil {
 		return tserr.Check(&tserr.CheckArgs{F: string(a.FileI), Err: e})
 	}
-	// Open fileA. If it does not exist, then create fileA as empty file.
-	f, erro := OpenFile(a.FileA)
-	// Return error, if any
-	if erro != nil {
-		return tserr.Op(&tserr.OpArgs{Op: "OpenFile", Fn: string(a.FileA), Err: erro})
-	}
 	// Read contents of fileI
 	out, errr := ReadFile(a.FileI)
 	// Return error, if any
 	if errr != nil {
 		return tserr.Op(&tserr.OpArgs{Op: "ReadFile", Fn: string(a.FileI), Err: errr})
+	}
+	// Open fileA. If it does not exist, then create fileA as empty file.
+	f, erro := OpenFile(a.FileA)
+	// Return error, if any
+	if erro != nil {
+		return tserr.Op(&tserr.OpArgs{Op: "OpenFile", Fn: string(a.FileA), Err: erro})
 	}
 	// Write contents of fileI to fileA
 	if _, e := f.Write(out); e != nil {
@@ -318,7 +322,7 @@ func RemoveFile(f Filename) error {
 		e := os.Remove(string(f))
 		if e != nil {
 			// Return an error if Remove fails
-			return tserr.Op(&tserr.OpArgs{Op: "Remove", Fn: string(f), Err: err})
+			return tserr.Op(&tserr.OpArgs{Op: "Remove", Fn: string(f), Err: e})
 		}
 	} else {
 		// Return an error if f does not exist

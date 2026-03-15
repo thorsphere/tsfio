@@ -1,4 +1,4 @@
-// Copyright (c) 2023 thorstenrie.
+// Copyright (c) 2023-2026 thorsphere.
 // All Rights Reserved. Use is governed with GNU Affero General Public Licence v3.0
 // that can be found in the LICENSE file.
 package tsfio_test
@@ -8,8 +8,8 @@ import (
 	"bytes"   // bytes
 	"testing" // testing
 
+	"github.com/thorsphere/tsfio"  // tsfio
 	"github.com/thorstenrie/tserr" // tserr
-	"github.com/thorstenrie/tsfio" // tsfio
 )
 
 // testNormByte tests NormNewlinesBytes to return normalized new lines for input string i with name n. New lines are expected to be normalized

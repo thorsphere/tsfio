@@ -1,4 +1,2 @@
-github.com/thorstenrie/tserr v1.12.0 h1:Ia1M37Rb7ehB+LCQa78jcuRveQfYSFXvP2kVr8F4VNs=
-github.com/thorstenrie/tserr v1.12.0/go.mod h1:8kiMcslns2DRdKLkLkp8MTb910lmtd9uPsElyILdkjA=
-github.com/thorstenrie/tserr v1.14.0 h1:EVxt+GR9K+rakFN9XdPK8zzbJZhu/HJWesewIzEUAoU=
-github.com/thorstenrie/tserr v1.14.0/go.mod h1:DoRbTb8KxRuaDowWt/2zn/hlhio7GMNaaqrB9pSm0j4=
+github.com/thorstenrie/tserr v1.15.0 h1:9BepJiULvZqXgPkJ/juxsyadxKyVAU5Vf6l6CqbD18c=
+github.com/thorstenrie/tserr v1.15.0/go.mod h1:DoRbTb8KxRuaDowWt/2zn/hlhio7GMNaaqrB9pSm0j4=
