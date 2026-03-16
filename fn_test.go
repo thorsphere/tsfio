@@ -8,6 +8,7 @@ import (
 	"fmt" // fmt
 	"os"  // os
 	"path/filepath"
+	"slices"
 	"testing" // testing
 
 	"github.com/thorsphere/tsfio"  // tsfio
@@ -252,7 +253,7 @@ func TestJoin(t *testing.T) {
 	}
 }
 
-// TestInvalDir tests InvalDir to return copies of the array of blocked directories. It retrieves two copies. One copy of the array
+// TestInvalDir tests InvalDir to return copies of the slice of blocked directories. It retrieves two copies. One copy of the slice
 // is changed. The test fails if both copies are equal, if only one copy is changed.
 func TestInvalDir(t *testing.T) {
 	// Retrieve a copy of blocked directories from InvalDir
@@ -262,13 +263,14 @@ func TestInvalDir(t *testing.T) {
 	// Change the first copy
 	d1[0] = testdir
 	// The test fails if both copies are equal
-	if d1 == d2 {
+	if slices.Equal(d1, d2) {
 		t.Error(tserr.NotEqual(&tserr.NotEqualArgs{X: "d1", Y: "d2"}))
 	}
 }
 
-// TestInvalFile tests InvalFIle to return copies of the array of blocked filenames. It retrieves two copies. One copy of the array
-// is changed. The test fails if both copies are equal, if only one copy is changed.
+// TestInvalFile tests InvalFIle to return copies of the slice of blocked filenames.
+// It retrieves two copies. One copy of the slice is changed. The test fails
+// if both copies are equal, if only one copy is changed.
 func TestInvalFile(t *testing.T) {
 	// Retrieve a copy of blocked directories from InvalFile
 	f1 := tsfio.InvalFile()
@@ -277,7 +279,7 @@ func TestInvalFile(t *testing.T) {
 	// Change the first copy
 	f1[0] = testfile
 	// The test fails if both copies are equal
-	if f1 == f2 {
+	if slices.Equal(f1, f2) {
 		t.Error(tserr.NotEqual(&tserr.NotEqualArgs{X: "f1", Y: "f2"}))
 	}
 }

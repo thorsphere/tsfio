@@ -7,13 +7,13 @@ package tsfio
 // tsfio functions will return an error. If a Filename
 // matches invalFile, tsfio functions will return an error.
 var (
-	invalDir [4]Directory = [4]Directory{
+	invalDir = []Directory{
 		"C:\\Windows\\System32",
 		"C:\\System Volume Information",
 		"C:\\Windows\\WinSxS",
 		"C:\\Windows\\SysWOW64",
 	}
-	invalFile [5]Filename = [5]Filename{
+	invalFile = []Filename{
 		"C:\\Program Files",
 		"C:\\Program Files (x86)",
 		"C:\\",
@@ -22,14 +22,14 @@ var (
 	}
 )
 
-// InvalDir returns the array of blocked directories. If a directory or their parents match InvalDir, tsfio
-// functions will return an error.
-func InvalDir() [4]Directory {
-	return invalDir
+// InvalDir returns the slice of blocked directories. If a directory or their parents match
+// InvalDir, tsfio functions will return an error.
+func InvalDir() []Directory {
+	return append([]Directory(nil), invalDir...)
 }
 
-// InvalFile returns the array of blocked filenames. If a Filename matches InvalFile, tsfio
+// InvalFile returns the slice of blocked filenames. If a Filename matches InvalFile, tsfio
 // functions will return an error.
-func InvalFile() [5]Filename {
-	return invalFile
+func InvalFile() []Filename {
+	return append([]Filename(nil), invalFile...)
 }

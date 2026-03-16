@@ -8,14 +8,14 @@ package tsfio
 // matches invalFile, tsfio functions will return an error.
 var (
 	// blocked directories
-	invalDir [4]Directory = [4]Directory{
+	invalDir = []Directory{
 		"/boot",
 		"/dev",
 		"/lost+found",
 		"/proc",
 	}
 	// blocked filenames
-	invalFile [14]Filename = [14]Filename{
+	invalFile = []Filename{
 		"/",
 		"/bin",
 		"/etc",
@@ -33,14 +33,14 @@ var (
 	}
 )
 
-// InvalDir returns the array of blocked directories. If a directory or their parents match InvalDir, tsfio
+// InvalDir returns the slice of blocked directories. If a directory or their parents match InvalDir, tsfio
 // functions will return an error.
-func InvalDir() [4]Directory {
-	return invalDir
+func InvalDir() []Directory {
+	return append([]Directory(nil), invalDir...)
 }
 
-// InvalFile returns the array of blocked filenames. If a Filename matches InvalFile, tsfio
+// InvalFile returns the slice of blocked filenames. If a Filename matches InvalFile, tsfio
 // functions will return an error.
-func InvalFile() [14]Filename {
-	return invalFile
+func InvalFile() []Filename {
+	return append([]Filename(nil), invalFile...)
 }
