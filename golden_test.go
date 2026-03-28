@@ -7,8 +7,8 @@ package tsfio_test
 import (
 	"testing" // testing
 
-	"github.com/thorsphere/tsfio"  // tsfio
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
+	"github.com/thorsphere/tsfio" // tsfio
 )
 
 // TestGoldenFile1 tests the creation and evaluation of golden files. It fails in case of an error.

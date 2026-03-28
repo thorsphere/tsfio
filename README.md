@@ -75,6 +75,7 @@ func RemoveFile(f Filename) error
 func ResetFile(fn Filename) error
 func CreateDir(d Directory) error
 func FileSize(fn Filename) (int64, error)
+func CopyFile(a *Copy) error
 ```
 
 With Printable functions, non-printable runes can be removed from strings and runes

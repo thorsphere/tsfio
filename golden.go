@@ -4,7 +4,7 @@
 package tsfio
 
 // Import package tserr
-import "github.com/thorstenrie/tserr" // tserr
+import "github.com/thorsphere/tserr" // tserr
 
 // Default directory and file type of golden files
 const (

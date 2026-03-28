@@ -9,8 +9,8 @@ import (
 	"testing" // testing
 	"time"    // time
 
-	"github.com/thorsphere/tsfio"  // tsfio
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
+	"github.com/thorsphere/tsfio" // tsfio
 )
 
 // The testcases use these tokens

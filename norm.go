@@ -8,7 +8,7 @@ import (
 	"bytes"   // bytes
 	"strings" // strings
 
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
 )
 
 // NormNewlinesBytes normalizes new lines in the byte slice i. New lines are normalized to the Unix representation of a new line as line feed LF (0x0A).

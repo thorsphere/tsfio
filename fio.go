@@ -38,7 +38,7 @@ import (
 	"path/filepath" // filepath
 	"time"          // time
 
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
 )
 
 // The constants hold the default flags and file mode
@@ -393,4 +393,91 @@ func FileSize(fn Filename) (int64, error) {
 		return 0, tserr.Op(&tserr.OpArgs{Op: "FileInfo (Stat) of", Fn: string(fn), Err: e})
 	}
 	return fi.Size(), nil
+}
+
+// Copy holds the source file Src and the destination file Dst for the copy operation of CopyFile.
+type Copy struct {
+	Src Filename // Src holds the source file for the copy operation of CopyFile
+	Dst Filename // Dst holds the destination file for the copy operation of CopyFile
+}
+
+// CopyFile copies the contents of file src to dst. If dst does not exist,
+// it is created as an empty file and as result will hold the contents of src.
+// It returns an error if dst already exists, if src does not exist,
+// if src or dst contains a blocked directory or filename,
+// if src is a directory, if dst is a directory or
+// if there is any error during the copy process.
+func CopyFile(a *Copy) error {
+	// Return error if pointer a is nil.
+	if a == nil {
+		return tserr.NilFailed("CopyFile")
+	}
+	// Return an error in case src contains a blocked directory or filename
+	if e := CheckFile(a.Src); e != nil {
+		return tserr.Check(&tserr.CheckArgs{F: string(a.Src), Err: e})
+	}
+	// Return an error in case dst contains a blocked directory or filename
+	if e := CheckFile(a.Dst); e != nil {
+		return tserr.Check(&tserr.CheckArgs{F: string(a.Dst), Err: e})
+	}
+
+	// Open source file
+	srcFile, err := os.Open(string(a.Src))
+	// Return an error if Open fails
+	if err != nil {
+		return tserr.Op(&tserr.OpArgs{Op: "Open", Fn: string(a.Src), Err: err})
+	}
+
+	// Check if destination file already exists
+	b, err := ExistsFile(a.Dst)
+	// Return an error if ExistsFile fails
+	if err != nil {
+		// Attempt to close source file before returning error
+		srcFile.Close()
+		// Return error if ExistsFile fails
+		return tserr.Op(&tserr.OpArgs{Op: "ExistsFile", Fn: string(a.Dst), Err: err})
+	}
+
+	// Return an error if destination file already exists
+	if b {
+		// Attempt to close source file before returning error
+		srcFile.Close()
+		// Return error if destination file already exists
+		return tserr.AlreadyExistent(string(a.Dst))
+	}
+
+	// Create destination file
+	dstFile, err := OpenFile(a.Dst)
+	if err != nil {
+		// Attempt to close source file before returning error
+		srcFile.Close()
+		// Return error if OpenFile fails
+		return tserr.Op(&tserr.OpArgs{Op: "Create", Fn: string(a.Dst), Err: err})
+	}
+
+	// Copy contents from source to destination
+	if _, err := dstFile.ReadFrom(srcFile); err != nil {
+		// Attempt to close files before returning error
+		srcFile.Close()
+		dstFile.Close()
+		// Return error if ReadFrom fails
+		return tserr.Op(&tserr.OpArgs{Op: "ReadFrom", Fn: fmt.Sprintf("%v to %v", a.Src, a.Dst), Err: err})
+	}
+
+	// Close source file
+	if err := srcFile.Close(); err != nil {
+		// Attempt to close destination file before returning error
+		dstFile.Close()
+		// Return error if Close fails
+		return tserr.Op(&tserr.OpArgs{Op: "Close", Fn: string(a.Src), Err: err})
+	}
+
+	// Close destination file
+	if err := dstFile.Close(); err != nil {
+		// Return error if Close fails
+		return tserr.Op(&tserr.OpArgs{Op: "Close", Fn: string(a.Dst), Err: err})
+	}
+
+	// No error occurred, return nil
+	return nil
 }

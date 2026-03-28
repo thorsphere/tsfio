@@ -11,8 +11,8 @@ import (
 	"testing"       // testing
 	"time"          // time
 
-	"github.com/thorsphere/tsfio"  // tsfio
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
+	"github.com/thorsphere/tsfio" // tsfio
 )
 
 // TestOpenFile1 tests OpenFile to open an existing temporary
@@ -445,6 +445,15 @@ func TestAppendFileNil(t *testing.T) {
 	}
 }
 
+// TestCopyFileNil tests CopyFile to return an error if retrieving a nil pointer.
+func TestCopyFileNil(t *testing.T) {
+	// Call CopyFile with a nil pointer
+	if e := tsfio.CopyFile(nil); e == nil {
+		// If CopyFile returns nil, the test fails
+		t.Error(tserr.NilFailed("CopyFile"))
+	}
+}
+
 // TestAppendFileEmptyA tests AppendFile to return an error if Append argument fileA is
 // an empty string. If AppendFile returns nil, the test fails.
 func TestAppendFileEmptyA(t *testing.T) {
@@ -454,6 +463,34 @@ func TestAppendFileEmptyA(t *testing.T) {
 	if e := tsfio.AppendFile(&tsfio.Append{FileA: "", FileI: fn}); e == nil {
 		// If AppendFile returns nil, the test fails
 		t.Error(tserr.NilFailed("AppendFile"))
+	}
+	// Remove temporary file fn
+	rm(t, fn)
+}
+
+// TestCopyFileEmptySrc tests CopyFile to return an error if Copy argument Src is
+// an empty string. If CopyFile returns nil, the test fails.
+func TestCopyFileEmptySrc(t *testing.T) {
+	// Create temporary file fn
+	fn := tmpFile(t)
+	// Call CopyFile with an empty string as source and fn as destination
+	if e := tsfio.CopyFile(&tsfio.Copy{Src: "", Dst: fn}); e == nil {
+		// If CopyFile returns nil, the test fails
+		t.Error(tserr.NilFailed("CopyFile"))
+	}
+	// Remove temporary file fn
+	rm(t, fn)
+}
+
+// TestCopyFileEmptyDst tests CopyFile to return an error if Copy argument Dst is
+// an empty string. If CopyFile returns nil, the test fails.
+func TestCopyFileEmptyDst(t *testing.T) {
+	// Create temporary file fn
+	fn := tmpFile(t)
+	// Call CopyFile with an empty string as destination and fn as source
+	if e := tsfio.CopyFile(&tsfio.Copy{Src: fn, Dst: ""}); e == nil {
+		// If CopyFile returns nil, the test fails
+		t.Error(tserr.NilFailed("CopyFile"))
 	}
 	// Remove temporary file fn
 	rm(t, fn)
@@ -481,6 +518,84 @@ func TestAppendFileEmptyIA(t *testing.T) {
 		// If AppendFile returns nil, the test fails
 		t.Error(tserr.NilFailed("AppendFile"))
 	}
+}
+
+// TestCopyFile tests CopyFile to copy a temporary file to another temporary file.
+// If the contents of the destination file does not match the expected contents, the test fails.
+func TestCopyFile(t *testing.T) {
+	// Create a temporary file as source file
+	fnSrc := tmpFile(t)
+	// Write the testcase string to the source file
+	if e := tsfio.WriteStr(fnSrc, testcase); e != nil {
+		// If WriteStr returns an error, the test fails
+		t.Error(tserr.Op(&tserr.OpArgs{
+			Op:  fmt.Sprintf("WriteStr %v to file", testcase),
+			Fn:  string(fnSrc),
+			Err: e,
+		}))
+	}
+
+	// Create a temporary file as destination file
+	fnDst := tmpFile(t)
+	// Remove the destination file to ensure that it does not exist
+	rm(t, fnDst)
+
+	// Copy the source file to the destination file using CopyFile
+	if e := tsfio.CopyFile(&tsfio.Copy{Src: fnSrc, Dst: fnDst}); e != nil {
+		t.Error(tserr.Op(&tserr.OpArgs{
+			Op:  fmt.Sprintf("CopyFile %v to file", fnSrc),
+			Fn:  string(fnDst),
+			Err: e,
+		}))
+	}
+
+	// Read the contents of the destination file into b using os.ReadFile
+	b, err := os.ReadFile(string(fnDst))
+
+	// Remove the source and destination files
+	rm(t, fnSrc)
+	rm(t, fnDst)
+
+	// If os.ReadFile returns an error, the test fails
+	if err != nil {
+		t.Fatal(tserr.Op(&tserr.OpArgs{
+			Op:  "ReadFile",
+			Fn:  string(fnDst),
+			Err: err,
+		}))
+	}
+
+	// If b does not match the expected string, the test fails
+	if string(b) != testcase {
+		t.Error(tserr.EqualStr(&tserr.EqualStrArgs{Var: string(fnDst), Actual: string(b), Want: testcase}))
+	}
+}
+
+// TestCopyFileDstExists tests CopyFile to return an error if the destination file already exists.
+func TestCopyFileDstExists(t *testing.T) {
+	// Create a temporary file as source file
+	fnSrc := tmpFile(t)
+	// Write the testcase string to the source file
+	if e := tsfio.WriteStr(fnSrc, testcase); e != nil {
+		// If WriteStr returns an error, the test fails
+		t.Error(tserr.Op(&tserr.OpArgs{
+			Op:  fmt.Sprintf("WriteStr %v to file", testcase),
+			Fn:  string(fnSrc),
+			Err: e,
+		}))
+	}
+
+	// Create a temporary file as destination file
+	fnDst := tmpFile(t)
+
+	// Copy the source file to the destination file using CopyFile
+	if e := tsfio.CopyFile(&tsfio.Copy{Src: fnSrc, Dst: fnDst}); e == nil {
+		t.Error(tserr.NilFailed("CopyFile"))
+	}
+
+	// Remove the source and destination files
+	rm(t, fnSrc)
+	rm(t, fnDst)
 }
 
 // TestAppendFile tests AppendFile to append a temporary file to another temporary file.

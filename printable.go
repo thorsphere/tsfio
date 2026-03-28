@@ -8,7 +8,7 @@ import (
 	"strings" // strings
 	"unicode" // unicode
 
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
 )
 
 // Printable returns all printable runes of string a as defined by Go.

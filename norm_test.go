@@ -8,8 +8,8 @@ import (
 	"bytes"   // bytes
 	"testing" // testing
 
-	"github.com/thorsphere/tsfio"  // tsfio
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
+	"github.com/thorsphere/tsfio" // tsfio
 )
 
 // testNormByte tests NormNewlinesBytes to return normalized new lines for input string i with name n. New lines are expected to be normalized

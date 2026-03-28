@@ -10,7 +10,7 @@ import (
 	"path/filepath" // path/filepath
 	"strings"       // strings
 
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
 )
 
 // Interface Fio is constrained to type Filename and Directory

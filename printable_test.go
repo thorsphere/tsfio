@@ -7,8 +7,8 @@ package tsfio_test
 import (
 	"testing" // testing
 
-	"github.com/thorsphere/tsfio"  // tsfio
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
+	"github.com/thorsphere/tsfio" // tsfio
 )
 
 // TestPrintable1 tests Printable, if it returns the identical string, if the provided string a only

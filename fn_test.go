@@ -11,8 +11,8 @@ import (
 	"slices"
 	"testing" // testing
 
-	"github.com/thorsphere/tsfio"  // tsfio
-	"github.com/thorstenrie/tserr" // tserr
+	"github.com/thorsphere/tserr" // tserr
+	"github.com/thorsphere/tsfio" // tsfio
 )
 
 // TestBlockedDir tests if CheckFile returns an error for all
