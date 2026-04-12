@@ -15,93 +15,120 @@
 ![GitHub Top Language](https://img.shields.io/github/languages/top/thorsphere/tsfio)
 ![GitHub](https://img.shields.io/github/license/thorsphere/tsfio)
 
-[Go](https://go.dev/) package with a [simple](https://en.wikipedia.org/wiki/KISS_principle) API for file input output. It is a supplement to the standard library and supplies additional functions for file input output and string operations, e.g., appending one file to another file.
+[Go](https://go.dev/) package providing a lightweight, safe API for file input/output operations. tsfio extends the standard library with utility functions for common file operations, test workflows, and string handling—built with security and simplicity in mind.
 
-- **Simple**: Without configuration, just function calls, and default flags are used
-- **Resilient**: File input output on Linux and Windows system directories or files are blocked (see [inval_unix.go](https://github.com/thorstenrie/tsfio/blob/main/inval_unix.go) and [inval_win.go](https://github.com/thorstenrie/tsfio/blob/main/inval_win.go))
-- **Tested**: Unit tests with a high code coverage
-- **Dependencies**: Only depends on the [Go Standard Library](https://pkg.go.dev/std) and [tserr](https://github.com/thorstenrie/tserr)
+- **Zero-Config**: Use out-of-the-box with sensible defaults, no configuration required
+- **Secure**: System-critical directories and files are blocked on Linux and Windows (see [inval_unix.go](https://github.com/thorsphere/tsfio/blob/main/inval_unix.go) and [inval_win.go](https://github.com/thorsphere/tsfio/blob/main/inval_win.go))
+- **Tested**: Comprehensive unit tests with high code coverage
+- **Minimal Dependencies**: Only requires the [Go Standard Library](https://pkg.go.dev/std) and [tserr](https://github.com/thorsphere/tserr)
 
-## Defaults
+## Safety & Defaults
 
-All file input output operations on Linux and Windows system directories or
-files are blocked (see [inval_unix.go](https://github.com/thorsphere/tsfio/blob/main/inval_unix.go) and [inval_win.go](https://github.com/thorsphere/tsfio/blob/main/inval_win.go)) and an error is returned.
-All operations expect a directory or a regular file, return an error otherwise.
-Default flags and file mode is used when opening files, creating files or directories
-and when writing to files (with exceptions documented in the function descriptions)
+File operations validate paths and return errors for system-critical locations. All file and directory operations use sensible defaults:
 
-- Files are opened read-write (os.O_RDWR).
-- Data is appended when writing to file (os.O_APPEND).
-- A file is created if it does not exist (os.O_CREATE).
-- File mode and permission bits are 0644.
-- Directory mode and permissions bits are 0755.
+- Files are opened with read-write, append, and create flags (os.O_RDWR | os.O_APPEND | os.O_CREATE)
+- File permissions: 0644
+- Directory permissions: 0755
+- All errors are returned in JSON format using [tserr](https://github.com/thorsphere/tserr)
 
-If an API call is not successful, a [tserr](https://github.com/thorsphere/tserr) error in JSON format is returned.
+## API
 
-## Usage
-
-In the Go app, the package is imported with
+Import the package:
 
 ```go
 import "github.com/thorsphere/tsfio"
 ```
 
-A Filename is the name of a regular file and may contain its path. A Directory is the name of a directory and may contain its path
+### Type Definitions
+
+Define file and directory paths:
 
 ```go
-type Filename string
-type Directory string
+type Filename string  // Path to a regular file
+type Directory string // Path to a directory
 ```
 
-CheckFile performs checks on Filename f and CheckDir performs checks on Directory d
+### Validation
+
+All external functions validate input before operating. Validation functions are available:
 
 ```go
-func CheckFile(f Filename) error
-func CheckDir(d Directory) error
+func CheckFile(f Filename) error // Validate file paths
+func CheckDir(d Directory) error  // Validate directory paths
 ```
 
-All external functions contain a CheckFile or CheckDir call at the beginning.
+### File Operations
 
 ```go
-func OpenFile(fn Filename) (*os.File, error)
-func CloseFile(f *os.File) error
-func WriteStr(fn Filename, s string) error
-func WriteSingleStr(fn Filename, s string) error
-func TouchFile(fn Filename) error
-func ReadFile(f Filename) ([]byte, error)
-func AppendFile(a *Append) error
-func ExistsFile(fn Filename) (bool, error)
-func RemoveFile(f Filename) error
-func ResetFile(fn Filename) error
-func CreateDir(d Directory) error
-func FileSize(fn Filename) (int64, error)
-func CopyFile(a *Copy) error
+func OpenFile(fn Filename) (*os.File, error)           // Open/create a file
+func CloseFile(f *os.File) error                       // Close a file
+func WriteStr(fn Filename, s string) error             // Append string to file
+func WriteSingleStr(fn Filename, s string) error       // Write string (truncate if exists)
+func TouchFile(fn Filename) error                      // Create/update file timestamp
+func ReadFile(f Filename) ([]byte, error)              // Read file contents
+func RemoveFile(f Filename) error                      // Delete a file
+func ResetFile(fn Filename) error                      // Truncate file to empty
+func ExistsFile(fn Filename) (bool, error)             // Check if file exists
+func FileSize(fn Filename) (int64, error)              // Get file size in bytes
 ```
 
-With Printable functions, non-printable runes can be removed from strings and runes
+### Directory Operations
 
 ```go
-func Printable(a string) string
-func IsPrintable(a []string) (bool, error)
-func RuneToPrintable(r rune) string
+func CreateDir(d Directory) error                      // Create directory (with parents)
+func ExistsDir(dn Directory) (bool, error)             // Check if directory exists
 ```
 
-With golden file functions, golden files can be created and test cases evaluated. Golden files can be used in unit tests. The expected output is stored in a golden file. The actual output data will be compared with the golden file. The test fails if there is a difference in actual output and golden file.
+### File Copy & Append
 
 ```go
-func GoldenFilePath(name string) (Filename, error)
-func CreateGoldenFile(tc *Testcase) error
-func EvalGoldenFile(tc *Testcase) error
+type Copy struct {
+	Src Filename // Source file
+	Dst Filename // Destination file
+}
+func CopyFile(a *Copy) error                           // Copy file contents
+
+type Append struct {
+	FileA Filename // File to extend
+	FileI Filename // File to append
+}
+func AppendFile(a *Append) error                       // Append one file to another
 ```
 
-With normalization functions, new lines in byte slices or strings are normalized to the Unix representation of a new line as line feed LF (0x0A). Therefore, Windows new lines CR LF (0x0D 0x0A) are replaced by Unix new lines LF (0x0A). Also, Mac new lines CR (0x0D) are replaced by Unix new lines LF (0x0A).
+### Printable Characters
+
+Filter non-printable characters from strings and runes:
 
 ```go
-func NormNewlinesBytes(i []byte) ([]byte, error)
-func NormNewlinesStr(i string) string
+func Printable(a string) string                        // Remove non-printable runes
+func IsPrintable(a []string) (bool, error)             // Check if strings are printable
+func RuneToPrintable(r rune) string                    // Convert rune to printable
 ```
 
-## Example
+### Golden Files
+
+Manage reference outputs for regression testing:
+
+```go
+type Testcase struct {
+	Name string // Test case name
+	Data string // Test data
+}
+func GoldenFilePath(name string) (Filename, error)     // Get golden file path
+func CreateGoldenFile(tc *Testcase) error              // Create reference golden file
+func EvalGoldenFile(tc *Testcase) error                // Compare against golden file
+```
+
+### Line Ending Normalization
+
+Normalize line endings across platforms (CRLF/CR → LF):
+
+```go
+func NormNewlinesBytes(i []byte) ([]byte, error)       // Normalize byte slice
+func NormNewlinesStr(i string) string                  // Normalize string
+```
+
+## Quick Start
 
 ```go
 package main
@@ -114,59 +141,57 @@ import (
 )
 
 func main() {
+	// Create temporary test files
 	f1, _ := os.CreateTemp("", "foo")
 	fn1 := tsfio.Filename(f1.Name())
+	defer f1.Close()
 
 	f2, _ := os.CreateTemp("", "foo")
 	fn2 := tsfio.Filename(f2.Name())
+	defer f2.Close()
 
+	// Remove and check if file exists
 	tsfio.RemoveFile(fn1)
-	b, _ := tsfio.ExistsFile(fn1)
-	fmt.Println(b)
+	exists, _ := tsfio.ExistsFile(fn1)
+	fmt.Println(exists) // false
 
+	// Create (touch) a file
 	tsfio.TouchFile(fn1)
-	b, _ = tsfio.ExistsFile(fn1)
-	fmt.Println(b)
+	exists, _ = tsfio.ExistsFile(fn1)
+	fmt.Println(exists) // true
 
+	// Append strings to file
 	tsfio.WriteStr(fn1, "foo")
 	tsfio.WriteStr(fn1, "foo")
-	c, _ := tsfio.ReadFile(fn1)
-	fmt.Println(string(c))
+	data, _ := tsfio.ReadFile(fn1)
+	fmt.Println(string(data)) // foofoo
 
+	// Append one file to another
 	tsfio.WriteStr(fn2, "foo")
 	tsfio.AppendFile(&tsfio.Append{FileA: fn1, FileI: fn2})
-	c, _ = tsfio.ReadFile(fn1)
-	fmt.Println(string(c))
+	data, _ = tsfio.ReadFile(fn1)
+	fmt.Println(string(data)) // foofoofoo
 
-	fs, _ := tsfio.FileSize(fn1)
-	fmt.Println(fs)
+	// Get file size
+	size, _ := tsfio.FileSize(fn1)
+	fmt.Println(size) // 9
 
+	// Overwrite file with single string
 	tsfio.WriteSingleStr(fn1, "foo")
-	c, _ = tsfio.ReadFile(fn1)
-	fmt.Println(string(c))
+	data, _ = tsfio.ReadFile(fn1)
+	fmt.Println(string(data)) // foo
 
+	// Reset (truncate) file
 	tsfio.ResetFile(fn1)
-	c, _ = tsfio.ReadFile(fn1)
-	fmt.Println(string(c))
+	data, _ = tsfio.ReadFile(fn1)
+	fmt.Println(string(data)) // (empty)
 }
 ```
-[Go Playground](https://go.dev/play/p/FYKm59cQuAV)
 
-Output
-```
-false
-true
-foofoo
-foofoofoo
-9
-foo
+[Try on Go Playground](https://go.dev/play/p/NHvbqw1L3J1)
 
-```
+## Resources
 
-## Links
-
-[Godoc](https://pkg.go.dev/github.com/thorsphere/tsfio)
-
-[Go Report Card](https://goreportcard.com/report/github.com/thorsphere/tsfio)
-
-[Open Source Insights](https://deps.dev/go/github.com%2Fthorsphere%2Ftsfio)
+- **[Godoc](https://pkg.go.dev/github.com/thorsphere/tsfio)** — Full API documentation
+- **[Go Report Card](https://goreportcard.com/report/github.com/thorsphere/tsfio)** — Code quality metrics
+- **[Open Source Insights](https://deps.dev/go/github.com%2Fthorsphere%2Ftsfio)** — Dependency analysis
