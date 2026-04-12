@@ -1,29 +1,30 @@
-// Package tsfio provides a simple API for file input output based on the standard library.
+// Package tsfio provides a file I/O toolkit that extends the standard library with
+// utility functions for common file operations and testing workflows.
 //
-// The tsfio package is a supplement to the standard library and supplies additional
-// functions for file input output operations, e.g., appending one file to another file.
-// Also, file input output operations on Linux and Windows system directories or
-// files are blocked (see inval_unix.go and inval_win.go) and an error is returned.
-// All operations expect a directory or a regular file, return an error otherwise.
-// Default flags and file mode is used when opening files, creating files or directories
-// and when writing to files (with exceptions documented in the function descriptions)
+// # Overview
 //
-//   - Files are opened read-write (os.O_RDWR).
-//   - Data is appended when writing to file (os.O_APPEND).
-//   - A file is created if it does not exist (os.O_CREATE).
-//   - File mode and permission bits are 0644.
-//   - Directory mode and permissions bits are 0755.
+// tsfio offers enhanced file handling with built-in safety features:
+//   - File operations validate that paths point to regular files or directories only.
+//   - Access to system-critical directories and files is blocked on Linux and Windows
+//     (see inval_unix.go and inval_win.go for details).
+//   - All errors are returned in JSON format using tserr for structured error handling.
 //
-// If an API call is not successful, a tserr error in JSON format is returned.
+// # Default File Modes
 //
-// With Printable functions, non-printable runes can be removed from strings and runes.
-// With golden file functions, golden files can be created and test cases evaluated.
-// Golden files can be used in unit tests. The expected output is stored in a golden file.
-// The actual output data will be compared with the golden file. The test fails if there
-// is a difference in actual output and golden file. With normalization functions, new lines
-// in byte slices or strings are normalized to the Unix representation of a new line as
-// line feed LF (0x0A). Therefore, Windows new lines CR LF (0x0D 0x0A) are replaced by Unix
-// new lines LF (0x0A). Also, Mac new lines CR (0x0D) are replaced by Unix new lines LF (0x0A).
+// File and directory operations use sensible defaults:
+//   - Files are opened with read-write, append, and create flags (os.O_RDWR | os.O_APPEND | os.O_CREATE).
+//   - File permissions default to 0644 (readable by all, writable by owner).
+//   - Directory permissions default to 0755 (full access for owner, read/execute for others).
+//
+// # Features
+//
+// Printable: Filter non-printable characters from strings and runes.
+//
+// Golden Files: Manage gold standard test outputs for regression testing. Store expected
+// output in golden files and compare against actual results to detect unintended changes.
+//
+// Normalization: Standardize line endings across platforms. Converts Windows (CR LF) and
+// Mac (CR) line endings to Unix line feed format (LF).
 //
 // Copyright (c) 2023-2026 thorsphere.
 // All Rights Reserved. Use is governed with GNU Affero General Public Licence v3.0
