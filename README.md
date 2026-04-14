@@ -77,6 +77,7 @@ func FileSize(fn Filename) (int64, error)              // Get file size in bytes
 ```go
 func CreateDir(d Directory) error                      // Create directory (with parents)
 func ExistsDir(dn Directory) (bool, error)             // Check if directory exists
+func RemoveDir(d Directory) error                      // Remove directory and all its contents
 ```
 
 ### File Copy & Append

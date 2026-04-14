@@ -305,6 +305,33 @@ func exists[T Fio](fn T) (bool, error) {
 	return false, tserr.Op(&tserr.OpArgs{Op: "FileInfo (Stat) of", Fn: string(fn), Err: err})
 }
 
+// RemoveDir removes directory d and all its contents. It returns an error, if there is any.
+// If d does not exist, it returns an error. If d is a file, it also returns an error.
+func RemoveDir(d Directory) error {
+	// Return an error in case d contains a blocked directory or filename
+	if e := CheckDir(d); e != nil {
+		return tserr.Check(&tserr.CheckArgs{F: string(d), Err: e})
+	}
+	// Check if d exists
+	b, err := ExistsDir(d)
+	// Return an error if ExistsDir fails
+	if err != nil {
+		return tserr.Op(&tserr.OpArgs{Op: "check if exists", Fn: string(d), Err: err})
+	}
+	if b {
+		// Remove directory named d, if it exists. Return an error, if RemoveAll fails
+		if e := os.RemoveAll(string(d)); e != nil {
+			return tserr.Op(&tserr.OpArgs{Op: "RemoveAll", Fn: string(d), Err: e})
+		}
+
+	} else {
+		// Return an error if d does not exist
+		return tserr.NotExistent(string(d))
+	}
+	// Return nil if no error occurred
+	return nil
+}
+
 // RemoveFile removes file f. It returns an error, if there is any. If f is a directory
 // it returns an error. If f does not exist, it also returns an error.
 func RemoveFile(f Filename) error {
@@ -320,8 +347,7 @@ func RemoveFile(f Filename) error {
 	}
 	if b {
 		// Remove f, if it exists
-		e := os.Remove(string(f))
-		if e != nil {
+		if e := os.Remove(string(f)); e != nil {
 			// Return an error if Remove fails
 			return tserr.Op(&tserr.OpArgs{Op: "Remove", Fn: string(f), Err: e})
 		}

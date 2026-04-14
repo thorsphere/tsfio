@@ -785,6 +785,57 @@ func TestRemoveFileEmpty(t *testing.T) {
 	}
 }
 
+// TestRemoveDirEmpty tests RemoveDir to return an error for an empty string as directory.
+// If RemoveDir returns nil, the test fails.
+func TestRemoveDirEmpty(t *testing.T) {
+	// Call RemoveDir for an empty string as directory
+	if err := tsfio.RemoveDir(""); err == nil {
+		// If RemoveDir returns nil, the test fails
+		t.Error(tserr.NilFailed("RemoveDir"))
+	}
+}
+
+// TestRemoveDir1 tests RemoveDir to remove an existing temporary directory.
+// If RemoveDir returns an error or the temporary directory still exists after
+// calling RemoveDir, the test fails.
+func TestRemoveDir1(t *testing.T) {
+	// Create the temporary directory dn
+	dn := tmpDir(t)
+	// Move a temporary file into dn to ensure that dn is not empty.
+	fn := tmpFile(t)
+	// Move fn into dn with os.Rename
+	os.Rename(string(fn), filepath.Join(string(dn), filepath.Base(string(fn))))
+	// Remove dn with RemoveDir
+	if e := tsfio.RemoveDir(dn); e != nil {
+		// If RemoveDir returns an error, the test fails
+		t.Error(tserr.Op(&tserr.OpArgs{
+			Op:  "RemoveDir",
+			Fn:  string(dn),
+			Err: e,
+		}))
+	}
+	// Check if dn still exists with ExistsDir
+	b, err := tsfio.ExistsDir(dn)
+	// If ExistsDir returns an error, the test fails
+	if err != nil {
+		t.Error(tserr.Op(&tserr.OpArgs{
+			Op:  "ExistsDir",
+			Fn:  string(dn),
+			Err: err,
+		}))
+	}
+	// If dn still exists, the test fails
+	if b {
+		t.Error(tserr.Return(&tserr.ReturnArgs{
+			Op:     "ExistsDir",
+			Actual: fmt.Sprintf("%t", b),
+			Want:   fmt.Sprintf("%t", !b),
+		}))
+		// Remove directory dn
+		rm(t, dn)
+	}
+}
+
 // TestRemoveFile1 tests RemoveFile to remove an existing temporary file.
 // If RemoveFile returns an error or the temporary file still exists after
 // calling RemoveFile, the test fails.
@@ -819,6 +870,20 @@ func TestRemoveFile1(t *testing.T) {
 		}))
 		// Remove file fn
 		rm(t, fn)
+	}
+}
+
+// TestRemoveDir2 tests RemoveDir for an non-existing directory.
+// If RemoveDirectory returns nil, the test fails.
+func TestRemoveDir2(t *testing.T) {
+	// Create the temporary directory dn
+	dn := tmpDir(t)
+	// Remove the temporary directory dn
+	rm(t, dn)
+	// Call RemoveDir for dn
+	if e := tsfio.RemoveDir(dn); e == nil {
+		// If RemoveDir returns nil, the test fails
+		t.Error(tserr.NilFailed("RemoveDir"))
 	}
 }
 
