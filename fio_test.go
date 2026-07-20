@@ -1,6 +1,6 @@
 // Copyright (c) 2023-2026 thorsphere.
-// All Rights Reserved. Use is governed with GNU Affero General Public Licence v3.0
-// that can be found in the LICENSE file.
+// All Rights Reserved. Use is governed by the Functional Source License v1.1
+// (FSL-1.1-ALv2) that can be found in the LICENSE file.
 package tsfio_test
 
 // Import standard library packages as well as tserr and tsfio
@@ -965,7 +965,7 @@ func testResetFile(t *testing.T, r bool) {
 	}
 	// If fn has a size greater than zero, the test fails
 	if fi.Size() > 0 {
-		t.Error(tserr.Equal(&tserr.EqualArgs{
+		t.Error(tserr.EqualInt(&tserr.EqualIntArgs{
 			Var:    fmt.Sprintf("Size of %v", fn),
 			Actual: fi.Size(),
 			Want:   0,
@@ -993,7 +993,7 @@ func TestFileSizeZero(t *testing.T) {
 	}
 	// If file size fs is not zero, the test fails
 	if fs != 0 {
-		t.Error(tserr.Equal(&tserr.EqualArgs{
+		t.Error(tserr.EqualInt(&tserr.EqualIntArgs{
 			Var:    fmt.Sprintf("FileSize of %v", fn),
 			Actual: fs,
 			Want:   0,
@@ -1054,7 +1054,7 @@ func TestFileSizeDir(t *testing.T) {
 	}
 	// If FileSize returns a non-zero size, the test fails
 	if fs != 0 {
-		t.Error(tserr.Equal(&tserr.EqualArgs{
+		t.Error(tserr.EqualInt(&tserr.EqualIntArgs{
 			Var:    fmt.Sprintf("FileSize of directory %v", d),
 			Actual: fs,
 			Want:   0,

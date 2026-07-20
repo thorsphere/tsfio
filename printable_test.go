@@ -1,6 +1,6 @@
 // Copyright (c) 2023-2026 thorsphere.
-// All Rights Reserved. Use is governed with GNU Affero General Public Licence v3.0
-// that can be found in the LICENSE file.
+// All Rights Reserved. Use is governed by the Functional Source License v1.1
+// (FSL-1.1-ALv2) that can be found in the LICENSE file.
 package tsfio_test
 
 // Import standard library packages as well as tserr and tsfio
@@ -95,7 +95,7 @@ func testIsPrintableEmpty(t *testing.T, str []string) {
 	}
 	// The test fails if length of str is higher than zero
 	if len(str) > 0 {
-		t.Error(tserr.Equal(&tserr.EqualArgs{Var: "len(str)", Actual: int64(len(str)), Want: 0}))
+		t.Error(tserr.EqualInt(&tserr.EqualIntArgs{Var: "len(str)", Actual: int64(len(str)), Want: 0}))
 	}
 	// Retrieve return values from IsPrintable for str
 	b, e := tsfio.IsPrintable(str)
