@@ -1,21 +1,14 @@
 # tsfio
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/thorsphere/tsfio)](https://goreportcard.com/report/github.com/thorsphere/tsfio)
-[![CodeFactor](https://www.codefactor.io/repository/github/thorsphere/tsfio/badge)](https://www.codefactor.io/repository/github/thorsphere/tsfio)
-![OSS Lifecycle](https://img.shields.io/osslifecycle/thorsphere/tsfio)
-
 [![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/thorsphere/tsfio)](https://pkg.go.dev/mod/github.com/thorsphere/tsfio)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/thorsphere/tsfio)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorsphere/tsfio)
+![GitHub Top Language](https://img.shields.io/github/languages/top/thorsphere/tsfio)
+[![CodeFactor](https://www.codefactor.io/repository/github/thorsphere/tsfio/badge)](https://www.codefactor.io/repository/github/thorsphere/tsfio)
+![OSS Lifecycle](https://img.shields.io/osslifecycle/thorsphere/tsfio)
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/thorsphere/tsfio)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorsphere/tsfio)
-![GitHub last commit](https://img.shields.io/github/last-commit/thorsphere/tsfio)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/thorsphere/tsfio)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/thorsphere/tsfio)
-![GitHub Top Language](https://img.shields.io/github/languages/top/thorsphere/tsfio)
-![GitHub](https://img.shields.io/github/license/thorsphere/tsfio)
-
-[Go](https://go.dev/) package providing a lightweight, safe API for file input/output operations. tsfio extends the standard library with utility functions for common file operations, test workflows, and string handling—built with security and simplicity in mind.
+Go package providing a lightweight, safe API for file input/output operations. tsfio extends the standard library with utility functions for common file operations, test workflows, and string handling—built with security and simplicity in mind.
 
 - **Zero-Config**: Use out-of-the-box with sensible defaults, no configuration required
 - **Secure**: System-critical directories and files are blocked on Linux and Windows (see [inval_unix.go](https://github.com/thorsphere/tsfio/blob/main/inval_unix.go) and [inval_win.go](https://github.com/thorsphere/tsfio/blob/main/inval_win.go))
@@ -87,7 +80,7 @@ type Copy struct {
 	Src Filename // Source file
 	Dst Filename // Destination file
 }
-func CopyFile(a *Copy) error                           // Copy file contents
+func CopyFile(a *Copy) error                           // Copy file contents (dst must not exist)
 
 type Append struct {
 	FileA Filename // File to extend
@@ -127,6 +120,20 @@ Normalize line endings across platforms (CRLF/CR → LF):
 ```go
 func NormNewlinesBytes(i []byte) ([]byte, error)       // Normalize byte slice
 func NormNewlinesStr(i string) string                  // Normalize string
+```
+
+## Path Helpers
+
+```go
+func Sprintf[T Fio](f string, a ...any) T          		// Sprintf for file and directory paths
+func Path(d Directory, f Filename) (Filename, error) 	// Join directory and filename
+```
+
+## Blocked Path Inspection
+
+```go
+func InvalDir() []Directory  							// List of blocked directories
+func InvalFile() []Filename  							// List of blocked filenames
 ```
 
 ## Quick Start
@@ -191,8 +198,29 @@ func main() {
 
 [Try on Go Playground](https://go.dev/play/p/NHvbqw1L3J1)
 
-## Resources
+## Documentation & Resources
 
-- **[Godoc](https://pkg.go.dev/github.com/thorsphere/tsfio)** — Full API documentation
-- **[Go Report Card](https://goreportcard.com/report/github.com/thorsphere/tsfio)** — Code quality metrics
-- **[Open Source Insights](https://deps.dev/go/github.com%2Fthorsphere%2Ftsfio)** — Dependency analysis
+- [Go Package Documentation](https://pkg.go.dev/github.com/thorsphere/tsfio) — Complete API reference
+- [Open Source Insights](https://deps.dev/go/github.com%2Fthorsphere%2Ftsfio) — Dependency analysis
+
+## ⚖️ License & Commercial Usage
+
+Copyright (c) 2023-2026 thorsphere. All rights reserved.
+
+This project is licensed under the **Functional Source License v1.1 (FSL-1.1-ALv2)**. 
+
+* The use, modification, and redistribution of this Go package is completely free for private, educational, non-commercial, and internal purposes. 
+* If you are a company or institution looking to use this package in a commercial product, service, or business environment, you must secure a commercial license.
+* Each version of this software automatically converts to the fully open-source Apache License, Version 2.0 on the second anniversary of its release.
+
+For full details, please see the [LICENSE](LICENSE) file.
+
+### 💼 Commercial Licensing & Inquiries
+
+To purchase a commercial license or discuss support options, please reach out directly:
+
+* 📩 **Contact:** business at thorsphere dot com
+* 💬 **Response Time:** Usually within a couple of business days.
+
+*Please include your company name and a brief overview of your use case so I can provide the right licensing details.*
+
