@@ -2,4 +2,4 @@ module github.com/thorsphere/tsfio
 
 go 1.26
 
-require github.com/thorsphere/tserr v1.20.4
+require github.com/thorsphere/tserr v1.21.0
