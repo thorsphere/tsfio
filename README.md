@@ -6,7 +6,6 @@
 ![GitHub Top Language](https://img.shields.io/github/languages/top/thorsphere/tsfio)
 [![CodeFactor](https://www.codefactor.io/repository/github/thorsphere/tsfio/badge)](https://www.codefactor.io/repository/github/thorsphere/tsfio)
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/thorsphere/tsfio)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/thorsphere/tsfio)
 
 Go package providing a lightweight, safe API for file input/output operations. tsfio extends the standard library with utility functions for common file operations, test workflows, and string handling—built with security and simplicity in mind.
 
